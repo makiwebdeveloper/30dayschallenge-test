@@ -3,12 +3,12 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { PasswordService } from './password.service';
 import { CookieService } from './cookie.service';
-import { UsersModule } from 'src/users/users.module';
+import { AccountsModule } from 'src/accounts/accounts.module';
 import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
-    UsersModule,
+    AccountsModule,
     JwtModule.register({
       global: true,
       secret: process.env.JWT_SECRET,

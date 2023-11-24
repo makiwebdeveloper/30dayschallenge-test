@@ -5,42 +5,42 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { SignInDto, SignUpDto } from './auth.dto';
-import { UsersService } from 'src/users/users.service';
+import { AccountsService } from 'src/accounts/accounts.service';
 import { PasswordService } from './password.service';
 
 @Injectable()
 export class AuthService {
   constructor(
-    private usersService: UsersService,
+    private accountsService: AccountsService,
     private passwordService: PasswordService,
     private jwt: JwtService,
   ) {}
 
   async signUp({
-    email,
+    username,
     password,
   }: SignUpDto): Promise<{ accessToken: string }> {
-    const user = await this.usersService.findByEmail(email);
+    const user = await this.accountsService.findByUsername(username);
 
     if (user) {
-      throw new BadRequestException({ type: 'email-exists' });
+      throw new BadRequestException({ type: 'username-exists' });
     }
 
     const salt = this.passwordService.getSalt();
     const hash = this.passwordService.getHash(password, salt);
 
-    const newUser = await this.usersService.create(email, hash, salt);
+    const newUser = await this.accountsService.create(username, hash, salt);
 
     const accessToken = await this.jwt.signAsync({
       id: newUser.id,
-      email: newUser.email,
+      username: newUser.username,
     });
 
     return { accessToken };
   }
 
-  async signIn({ email, password }: SignInDto) {
-    const user = await this.usersService.findByEmail(email);
+  async signIn({ username, password }: SignInDto) {
+    const user = await this.accountsService.findByUsername(username);
 
     if (!user) {
       throw new UnauthorizedException();
@@ -54,7 +54,7 @@ export class AuthService {
 
     const accessToken = await this.jwt.signAsync({
       id: user.id,
-      email: user.email,
+      username: user.username,
     });
 
     return { accessToken };

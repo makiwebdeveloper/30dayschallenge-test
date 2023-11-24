@@ -7,9 +7,78 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id           String @id @default(uuid())
-  email        String @unique
+model Account {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  username     String @unique
   passwordHash String @map("password_hash")
   salt         String
+
+  user User?
+}
+
+model User {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  name     String
+  imageUrl String @map("image_url")
+
+  account   Account @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  accountId String  @unique
+
+  friends User[]  @relation("friends")
+  user    User?   @relation("friends", fields: [userId], references: [id])
+  userId  String?
+
+  challanges        UserToChallange[]
+  createdChallanges Challange[]
+}
+
+model Challange {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  title       String
+  description String?
+
+  creator   User   @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+  creatorId String
+
+  members UserToChallange[]
+  days    Day[]
+}
+
+model UserToChallange {
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+
+  challange   Challange @relation(fields: [challangeId], references: [id], onDelete: Cascade)
+  challangeId String
+
+  @@id([userId, challangeId])
+}
+
+model Day {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  number     Int
+  feelings   String?
+  difficulty Difficulty?
+  completed  Boolean
+
+  challange   Challange @relation(fields: [challangeId], references: [id], onDelete: Cascade)
+  challangeId String
+}
+
+enum Difficulty {
+  EASY
+  MEDIUM
+  HARD
 }

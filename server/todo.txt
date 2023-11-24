@@ -1,0 +1,7 @@
+[X] - Auth
+[ ] - Create user
+[ ] - Edit user
+[ ] - Create challange
+[ ] - Edit challange
+[ ] - Mark the day
+[ ] - Add friends

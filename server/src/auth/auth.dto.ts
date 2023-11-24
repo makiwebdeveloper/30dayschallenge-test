@@ -1,12 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsNotEmpty } from 'class-validator';
+import { IsNotEmpty, NotContains } from 'class-validator';
 
 export class SignUpDto {
   @ApiProperty({
-    example: 'test@gmail.com',
+    example: 'johnwatson',
   })
-  @IsEmail()
-  email: string;
+  @IsNotEmpty()
+  @NotContains(' ')
+  username: string;
 
   @ApiProperty({
     example: '123456',
@@ -17,10 +18,11 @@ export class SignUpDto {
 
 export class SignInDto {
   @ApiProperty({
-    example: 'test@gmail.com',
+    example: 'johnwatson',
   })
-  @IsEmail()
-  email: string;
+  @IsNotEmpty()
+  @NotContains(' ')
+  username: string;
 
   @ApiProperty({
     example: '123456',
@@ -34,7 +36,7 @@ export class GetSessionDto {
   id: number;
 
   @ApiProperty()
-  email: string;
+  username: string;
 
   @ApiProperty()
   iat: number;

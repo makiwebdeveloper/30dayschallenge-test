@@ -1,16 +1,26 @@
 import { Injectable } from '@nestjs/common';
 import { DbService } from 'src/db/db.service';
+import { CreateUserDto, UpdateUserDto } from './users.dto';
 import { User } from '@prisma/client';
 
 @Injectable()
 export class UsersService {
   constructor(private db: DbService) {}
 
-  async findByEmail(email: string): Promise<User> {
-    return this.db.user.findUnique({ where: { email } });
+  async createUser(data: CreateUserDto): Promise<User> {
+    return this.db.user.create({ data });
   }
 
-  async create(email: string, hash: string, salt: string): Promise<User> {
-    return this.db.user.create({ data: { email, passwordHash: hash, salt } });
+  async updateUser(userId: string, data: UpdateUserDto): Promise<User> {
+    return this.db.user.update({
+      where: {
+        id: userId,
+      },
+      data,
+    });
+  }
+
+  async getUserById(userId: string): Promise<User | undefined> {
+    return this.db.user.findUnique({ where: { id: userId } });
   }
 }
