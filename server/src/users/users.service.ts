@@ -23,4 +23,16 @@ export class UsersService {
   async getUserById(userId: string): Promise<User | undefined> {
     return this.db.user.findUnique({ where: { id: userId } });
   }
+
+  async getUsers(username?: string): Promise<User[]> {
+    return this.db.user.findMany({
+      where: {
+        account: {
+          username: {
+            contains: username,
+          },
+        },
+      },
+    });
+  }
 }

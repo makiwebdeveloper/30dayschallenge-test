@@ -49,7 +49,7 @@ export class AuthService {
     const hash = this.passwordService.getHash(password, user.salt);
 
     if (hash !== user.passwordHash) {
-      throw new UnauthorizedException();
+      throw new BadRequestException();
     }
 
     const accessToken = await this.jwt.signAsync({
