@@ -1,0 +1,86 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Account {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  username     String @unique
+  passwordHash String @map("password_hash")
+  salt         String
+
+  user User?
+}
+
+model User {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  name     String
+  imageUrl String @map("image_url")
+
+  account   Account @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  accountId String  @unique @map("account_id")
+
+  challanges        UserToChallange[]
+  createdChallanges Challange[]
+
+  friends  User[] @relation("friends")
+  friendOf User[] @relation("friends")
+}
+
+model Challange {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  title       String
+  description String?
+
+  creator   User   @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+  creatorId String @map("creator_id")
+
+  members UserToChallange[]
+}
+
+model UserToChallange {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  challange   Challange @relation(fields: [challangeId], references: [id])
+  challangeId String    @map("challange_id")
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String @map("user_id")
+
+  days Day[]
+}
+
+model Day {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  number     Int
+  feelings   String?
+  difficulty Difficulty?
+  completed  Boolean     @default(false)
+
+  challange   UserToChallange @relation(fields: [challangeId], references: [id])
+  challangeId String
+}
+
+enum Difficulty {
+  EASY
+  MEDIUM
+  HARD
+}
