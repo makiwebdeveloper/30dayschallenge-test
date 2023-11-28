@@ -28,7 +28,7 @@ model User {
   imageUrl String @map("image_url")
 
   account   Account @relation(fields: [accountId], references: [id], onDelete: Cascade)
-  accountId String  @unique
+  accountId String  @unique @map("account_id")
 
   challanges        UserToChallange[]
   createdChallanges Challange[]
@@ -46,20 +46,23 @@ model Challange {
   description String?
 
   creator   User   @relation(fields: [creatorId], references: [id], onDelete: Cascade)
-  creatorId String
+  creatorId String @map("creator_id")
 
   members UserToChallange[]
-  days    Day[]
 }
 
 model UserToChallange {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  challange   Challange @relation(fields: [challangeId], references: [id])
+  challangeId String    @map("challange_id")
+
   user   User   @relation(fields: [userId], references: [id])
-  userId String
+  userId String @map("user_id")
 
-  challange   Challange @relation(fields: [challangeId], references: [id], onDelete: Cascade)
-  challangeId String
-
-  @@id([userId, challangeId])
+  days Day[]
 }
 
 model Day {
@@ -70,9 +73,9 @@ model Day {
   number     Int
   feelings   String?
   difficulty Difficulty?
-  completed  Boolean
+  completed  Boolean     @default(false)
 
-  challange   Challange @relation(fields: [challangeId], references: [id], onDelete: Cascade)
+  challange   UserToChallange @relation(fields: [challangeId], references: [id])
   challangeId String
 }
 

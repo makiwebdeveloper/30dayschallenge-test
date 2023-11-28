@@ -5,3 +5,26 @@
 [ ] - Edit challange
 [ ] - Mark the day
 [ ] - Add friends
+
+id
+title
+description
+creator {
+  id
+  username
+  name
+  imageUrl
+}
+days {
+  id
+  number
+  feelings
+  difficulty
+  completed
+}[]
+members {
+  id
+  username
+  name
+  imageUrl
+}[]

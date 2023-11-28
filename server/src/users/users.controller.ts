@@ -2,7 +2,7 @@ import {
   Controller,
   Post,
   Body,
-  Put,
+  Patch,
   Param,
   Get,
   UseGuards,
@@ -31,7 +31,7 @@ export class UsersController {
   }
 
   @ApiOkResponse()
-  @Put(':id')
+  @Patch(':id')
   @UseGuards(AuthGuard)
   async updateUser(@Body() body: UpdateUserDto, @Param('id') id: string) {
     return this.usersService.updateUser(id, body);
